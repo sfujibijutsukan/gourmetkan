@@ -11,16 +11,19 @@
   <header class="site-header">
     <div class="container">
       <div class="brand">Gourmetkan</div>
-      <form class="base-select" action="/bases/select" method="post">
-        {{if .CSRFToken}}<input type="hidden" name="csrf_token" value="{{.CSRFToken}}">{{end}}
-        <label for="base_id">拠点</label>
-        <select id="base_id" name="base_id">
-          {{range .Bases}}
-          <option value="{{.ID}}" {{if eq $.SelectedBaseID .ID}}selected{{end}}>{{.Name}}</option>
-          {{end}}
-        </select>
-        <button type="submit">切替</button>
-      </form>
+      <div class="base-select">
+        <form action="/bases/select" method="post">
+          {{if .CSRFToken}}<input type="hidden" name="csrf_token" value="{{.CSRFToken}}">{{end}}
+          <label for="base_id">拠点</label>
+          <select id="base_id" name="base_id">
+            {{range .Bases}}
+            <option value="{{.ID}}" {{if eq $.SelectedBaseID .ID}}selected{{end}}>{{.Name}}</option>
+            {{end}}
+          </select>
+          <button type="submit">切替</button>
+        </form>
+        <a class="btn secondary" href="/bases/new">拠点追加</a>
+      </div>
       <div class="auth">
         {{if .User}}
           <form action="/auth/logout" method="post">

@@ -36,6 +36,8 @@ func NewRouter(cfg Config, authService *auth.Service, baseService *services.Base
 	r.mux.HandleFunc("/auth/github/callback", handlers.GitHubCallback)
 	r.mux.HandleFunc("/auth/logout", handlers.Logout)
 	r.mux.HandleFunc("/bases/select", handlers.SelectBase)
+	r.mux.HandleFunc("/bases/new", handlers.NewBase)
+	r.mux.HandleFunc("/bases", handlers.CreateBase)
 	r.mux.HandleFunc("/restaurants/new", handlers.NewRestaurant)
 	r.mux.HandleFunc("/restaurants", handlers.CreateRestaurant)
 	r.mux.HandleFunc("/restaurants/", handlers.RestaurantRouter)

@@ -53,3 +53,15 @@ func (s *BaseService) GetBaseByID(id int) (*Base, error) {
 	}
 	return &base, nil
 }
+
+func (s *BaseService) CreateBase(base Base) (int, error) {
+	result, err := s.db.Exec("INSERT INTO bases (name, latitude, longitude) VALUES (?, ?, ?)", base.Name, base.Latitude, base.Longitude)
+	if err != nil {
+		return 0, fmt.Errorf("create base: %w", err)
+	}
+	createdID, err := result.LastInsertId()
+	if err != nil {
+		return 0, fmt.Errorf("base id: %w", err)
+	}
+	return int(createdID), nil
+}
