@@ -18,6 +18,12 @@ type TemplateData struct {
 	Errors         map[string]string
 	Notice         string
 	RadiusKm       float64
+	PresetTags     []string
+	SelectedTags   []string
+	SelectedTagSet map[string]bool
+	TagInput       string
+	AvailableTags  []TagOption
+	SelectedTag    string
 }
 
 func (h *Handler) render(w http.ResponseWriter, name string, data TemplateData) {

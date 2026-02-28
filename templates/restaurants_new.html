@@ -28,6 +28,31 @@
       </label>
     </div>
     {{with index .Errors "latitude"}}<div class="error">{{.}}</div>{{end}}
+    <div class="tags">
+      <div class="tags-label">タグ（複数可）</div>
+      <div class="tag-options">
+        {{range .PresetTags}}
+          <label class="tag-pill">
+            <input type="checkbox" name="tags" value="{{.}}" {{if index $.SelectedTagSet .}}checked{{end}}>
+            <span>{{.}}</span>
+          </label>
+        {{end}}
+      </div>
+      {{if .AvailableTags}}
+      <div class="tag-options">
+        {{range .AvailableTags}}
+          <label class="tag-pill secondary">
+            <input type="checkbox" name="tags" value="{{.Name}}" {{if index $.SelectedTagSet .Name}}checked{{end}}>
+            <span>{{.Name}}</span>
+          </label>
+        {{end}}
+      </div>
+      {{end}}
+      <label>任意タグ（カンマ区切り）
+        <input type="text" name="tag_input" value="{{.TagInput}}" placeholder="例: 昼飲み, こってり">
+      </label>
+      {{with index .Errors "tags"}}<div class="error">{{.}}</div>{{end}}
+    </div>
     <button type="submit">登録する</button>
   </form>
 </section>

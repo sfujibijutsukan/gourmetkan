@@ -4,6 +4,13 @@
   <h1>{{.Restaurant.Name}}</h1>
   <div class="muted">{{.Restaurant.Description}}</div>
   <div class="distance">{{.Restaurant.Distance}}</div>
+  {{if .Restaurant.Tags}}
+  <div class="tag-list">
+    {{range .Restaurant.Tags}}
+      <a class="tag-pill" href="/?tag={{.}}">{{.}}</a>
+    {{end}}
+  </div>
+  {{end}}
   {{if .Restaurant.Address}}<div>住所: {{.Restaurant.Address}}</div>{{end}}
   {{if .Restaurant.MapsURL}}<div><a href="{{.Restaurant.MapsURL}}" target="_blank" rel="noreferrer">Google Maps を開く</a></div>{{end}}
 </section>

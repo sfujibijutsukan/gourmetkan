@@ -88,6 +88,22 @@ button {
   gap: 12px;
 }
 
+.tag-filter {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.tag-filter select,
+.tag-filter button {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+}
+
 .restaurant-list,
 .review-list {
   list-style: none;
@@ -130,6 +146,51 @@ button {
   gap: 12px;
 }
 
+.tags {
+  display: grid;
+  gap: 10px;
+}
+
+.tags-label {
+  font-weight: 600;
+}
+
+.tag-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 8px 0 4px;
+}
+
+.tag-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(47, 111, 94, 0.12);
+  color: var(--accent);
+  border: 1px solid rgba(47, 111, 94, 0.2);
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.tag-pill.secondary {
+  background: rgba(122, 108, 79, 0.12);
+  color: #7a6c4f;
+  border-color: rgba(122, 108, 79, 0.2);
+}
+
+.tag-pill input {
+  accent-color: var(--accent);
+}
+
 .error {
   color: #b0352f;
   font-size: 0.9rem;
@@ -150,5 +211,8 @@ button {
   .panel-header {
     flex-direction: column;
     align-items: flex-start;
+  }
+  .tag-filter {
+    width: 100%;
   }
 }

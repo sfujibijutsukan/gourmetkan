@@ -19,7 +19,19 @@ type RestaurantDetail struct {
 	Address     string
 	MapsURL     string
 	Distance    string
+	Tags        []string
 }
+
+type RestaurantListItem struct {
+	ID          int
+	Name        string
+	Description string
+	DistanceKm  float64
+	Distance    string
+	Tags        []string
+}
+
+var presetTags = []string{"ラーメン", "居酒屋", "寿司", "焼肉", "カフェ", "定食", "中華", "イタリアン", "カレー"}
 
 func (h *Handler) NewRestaurant(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
@@ -32,10 +44,13 @@ func (h *Handler) NewRestaurant(w http.ResponseWriter, r *http.Request) {
 	}
 	bases, _ := h.baseService.ListBases()
 	base, _ := h.getSelectedBase(r)
+	allTags, _ := h.restaurantService.ListTags()
 	data := TemplateData{
 		Bases:          toBaseOptions(bases),
 		SelectedBaseID: base.ID,
 		CSRFToken:      csrfTokenOrEmpty(session),
+		PresetTags:     presetTags,
+		AvailableTags:  toTagOptions(allTags),
 	}
 	h.render(w, "restaurants_new.html", data)
 }
@@ -64,6 +79,8 @@ func (h *Handler) CreateRestaurant(w http.ResponseWriter, r *http.Request) {
 	address := strings.TrimSpace(r.FormValue("address"))
 	latStr := strings.TrimSpace(r.FormValue("latitude"))
 	lngStr := strings.TrimSpace(r.FormValue("longitude"))
+	selectedTags := r.Form["tags"]
+	freeform := strings.TrimSpace(r.FormValue("tag_input"))
 
 	errors := map[string]string{}
 	if !util.ValidateRequiredText(name, 1, 100) {
@@ -113,20 +130,45 @@ func (h *Handler) CreateRestaurant(w http.ResponseWriter, r *http.Request) {
 	if !locationSet {
 		errors["latitude"] = "緯度経度が取得できませんでした。"
 	}
+	parsedTags := make([]string, 0)
+	for _, tag := range selectedTags {
+		parsedTags = append(parsedTags, normalizeTagName(tag))
+	}
+	parsedTags = append(parsedTags, parseTagList(freeform)...)
+	parsedTags = dedupeTags(parsedTags)
+	if len(parsedTags) > 10 {
+		errors["tags"] = "タグは10個以内で入力してください。"
+	}
+	for _, tag := range parsedTags {
+		if !util.ValidateRequiredText(tag, 1, 20) {
+			errors["tags"] = "タグは1〜20文字で入力してください。"
+			break
+		}
+	}
+
 	if len(errors) > 0 {
 		bases, _ := h.baseService.ListBases()
 		base, _ := h.getSelectedBase(r)
+		allTags, _ := h.restaurantService.ListTags()
+		selectedSet := make(map[string]bool)
+		for _, tag := range parsedTags {
+			selectedSet[tag] = true
+		}
 		data := TemplateData{
 			Bases:          toBaseOptions(bases),
 			SelectedBaseID: base.ID,
 			CSRFToken:      csrfTokenOrEmpty(session),
 			Errors:         errors,
+			PresetTags:     presetTags,
+			AvailableTags:  toTagOptions(allTags),
+			SelectedTagSet: selectedSet,
+			TagInput:       freeform,
 		}
 		h.render(w, "restaurants_new.html", data)
 		return
 	}
 
-	_, err := h.restaurantService.CreateRestaurant(services.Restaurant{
+	createdID, err := h.restaurantService.CreateRestaurant(services.Restaurant{
 		Name:        name,
 		Description: description,
 		Latitude:    latitude,
@@ -138,6 +180,21 @@ func (h *Handler) CreateRestaurant(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		http.Error(w, "create error", http.StatusInternalServerError)
 		return
+	}
+	if len(parsedTags) > 0 {
+		tagIDs := make([]int, 0, len(parsedTags))
+		for _, tagName := range parsedTags {
+			tag, err := h.restaurantService.UpsertTag(tagName)
+			if err != nil {
+				http.Error(w, "create error", http.StatusInternalServerError)
+				return
+			}
+			tagIDs = append(tagIDs, tag.ID)
+		}
+		if err := h.restaurantService.AttachTags(createdID, tagIDs); err != nil {
+			http.Error(w, "create error", http.StatusInternalServerError)
+			return
+		}
 	}
 	http.Redirect(w, r, "/", http.StatusFound)
 }
@@ -173,6 +230,15 @@ func (h *Handler) RestaurantDetail(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "review error", http.StatusInternalServerError)
 		return
 	}
+	tagRows, err := h.restaurantService.TagsForRestaurant(rest.ID)
+	if err != nil {
+		http.Error(w, "tag error", http.StatusInternalServerError)
+		return
+	}
+	var tagNames []string
+	for _, tag := range tagRows {
+		tagNames = append(tagNames, tag.Name)
+	}
 
 	session, _ := h.getSession(r)
 	bases, _ := h.baseService.ListBases()
@@ -183,6 +249,7 @@ func (h *Handler) RestaurantDetail(w http.ResponseWriter, r *http.Request) {
 		Address:     rest.Address,
 		MapsURL:     rest.MapsURL,
 		Distance:    util.FormatDistanceKm(distanceKm),
+		Tags:        tagNames,
 	}
 	data := TemplateData{
 		Bases:          toBaseOptions(bases),
