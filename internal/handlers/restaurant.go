@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	"fmt"
+	"math"
 	"net/http"
 	"strconv"
 	"strings"
@@ -13,13 +14,16 @@ import (
 )
 
 type RestaurantDetail struct {
-	ID          int
-	Name        string
-	Description string
-	Address     string
-	MapsURL     string
-	Distance    string
-	Tags        []string
+	ID             int
+	Name           string
+	Description    string
+	Address        string
+	MapsURL        string
+	Distance       string
+	Tags           []string
+	Average        float64
+	ReviewCount    int
+	AveragePercent int
 }
 
 type RestaurantListItem struct {
@@ -29,6 +33,13 @@ type RestaurantListItem struct {
 	DistanceKm  float64
 	Distance    string
 	Tags        []string
+}
+
+type ReviewDisplay struct {
+	Username      string
+	Rating        int
+	RatingPercent int
+	Comment       string
 }
 
 var presetTags = []string{"ラーメン", "居酒屋", "寿司", "焼肉", "カフェ", "定食", "中華", "イタリアン", "カレー"}
@@ -230,6 +241,21 @@ func (h *Handler) RestaurantDetail(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "review error", http.StatusInternalServerError)
 		return
 	}
+	reviewDisplays := make([]ReviewDisplay, 0, len(reviews))
+	for _, review := range reviews {
+		reviewDisplays = append(reviewDisplays, ReviewDisplay{
+			Username:      review.Username,
+			Rating:        review.Rating,
+			RatingPercent: review.Rating * 20,
+			Comment:       review.Comment,
+		})
+	}
+	avgRating, reviewCount, err := h.reviewService.AverageRating(rest.ID)
+	if err != nil {
+		http.Error(w, "review error", http.StatusInternalServerError)
+		return
+	}
+	starAverage := math.Round(avgRating*2) / 2
 	tagRows, err := h.restaurantService.TagsForRestaurant(rest.ID)
 	if err != nil {
 		http.Error(w, "tag error", http.StatusInternalServerError)
@@ -247,13 +273,16 @@ func (h *Handler) RestaurantDetail(w http.ResponseWriter, r *http.Request) {
 		user, _ = h.userService.GetUserByID(session.UserID)
 	}
 	detail := RestaurantDetail{
-		ID:          rest.ID,
-		Name:        rest.Name,
-		Description: rest.Description,
-		Address:     rest.Address,
-		MapsURL:     rest.MapsURL,
-		Distance:    util.FormatDistanceKm(distanceKm),
-		Tags:        tagNames,
+		ID:             rest.ID,
+		Name:           rest.Name,
+		Description:    rest.Description,
+		Address:        rest.Address,
+		MapsURL:        rest.MapsURL,
+		Distance:       util.FormatDistanceKm(distanceKm),
+		Tags:           tagNames,
+		Average:        avgRating,
+		ReviewCount:    reviewCount,
+		AveragePercent: int(math.Round(starAverage / 5 * 100)),
 	}
 	data := TemplateData{
 		Bases:          toBaseOptions(bases),
@@ -261,7 +290,7 @@ func (h *Handler) RestaurantDetail(w http.ResponseWriter, r *http.Request) {
 		User:           user,
 		CSRFToken:      csrfTokenOrEmpty(session),
 		Restaurant:     detail,
-		Reviews:        reviews,
+		Reviews:        reviewDisplays,
 	}
 	h.render(w, "restaurants_show.html", data)
 }

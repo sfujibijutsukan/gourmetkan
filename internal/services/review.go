@@ -61,3 +61,19 @@ func (s *ReviewService) CreateReview(review Review) error {
 	}
 	return nil
 }
+
+func (s *ReviewService) AverageRating(restaurantID int) (float64, int, error) {
+	var avg sql.NullFloat64
+	var count int
+	if err := s.db.QueryRow(`
+        SELECT AVG(rating), COUNT(*)
+        FROM reviews
+        WHERE restaurant_id = ?
+    `, restaurantID).Scan(&avg, &count); err != nil {
+		return 0, 0, fmt.Errorf("avg rating: %w", err)
+	}
+	if !avg.Valid {
+		return 0, 0, nil
+	}
+	return avg.Float64, count, nil
+}

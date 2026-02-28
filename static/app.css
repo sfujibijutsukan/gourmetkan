@@ -299,6 +299,70 @@ button:hover {
   color: var(--accent-strong);
 }
 
+.rating-input {
+  display: grid;
+  gap: 8px;
+}
+
+.rating-label {
+  font-weight: 600;
+}
+
+.star-rating {
+  display: inline-flex;
+  flex-direction: row-reverse;
+  gap: 6px;
+}
+
+.star-rating input {
+  position: absolute;
+  opacity: 0;
+}
+
+.star-rating label {
+  font-size: 1.4rem;
+  color: #d1c7b4;
+  cursor: pointer;
+  transition: transform 0.15s ease, color 0.15s ease;
+}
+
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+  color: #f0b323;
+  transform: translateY(-1px);
+}
+
+.star-rating input:focus + label {
+  outline: 2px solid rgba(47, 111, 94, 0.35);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.star-rating input:checked + label,
+.star-rating input:checked + label ~ label {
+  color: #f0b323;
+}
+
+.star-rating.google-stars {
+  gap: 4px;
+}
+
+.star-rating.google-stars label {
+  font-size: 1.6rem;
+  color: #dadce0;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.08);
+}
+
+.star-rating.google-stars label:hover,
+.star-rating.google-stars label:hover ~ label {
+  color: #fbbc04;
+}
+
+.star-rating.google-stars input:checked + label,
+.star-rating.google-stars input:checked + label ~ label {
+  color: #fbbc04;
+}
+
 .review-meta {
   display: flex;
   align-items: center;
@@ -310,6 +374,75 @@ button:hover {
 .review-user {
   font-weight: 600;
   color: var(--accent);
+}
+
+.review-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.average-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.star-bar {
+  position: relative;
+  display: inline-block;
+  font-size: 1.1rem;
+  letter-spacing: 3px;
+  line-height: 1;
+}
+
+.star-bar-bg {
+  display: block;
+  color: #dadce0;
+}
+
+.star-bar-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  display: block;
+  overflow: hidden;
+  color: #fbbc04;
+}
+
+.review-stars {
+  position: relative;
+  display: inline-block;
+  font-size: 1.1rem;
+  letter-spacing: 2px;
+  line-height: 1;
+}
+
+.review-stars-bg {
+  display: block;
+  color: #dadce0;
+}
+
+.review-stars-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  display: block;
+  overflow: hidden;
+  color: #fbbc04;
+}
+
+.rating-text {
+  font-weight: 600;
+  color: var(--accent-strong);
+}
+
+.rating-count {
+  color: var(--muted);
+  font-weight: 600;
 }
 
 @keyframes panelIn {

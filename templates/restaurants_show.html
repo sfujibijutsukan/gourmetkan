@@ -3,6 +3,18 @@
 <section class="panel">
   <h1>{{.Restaurant.Name}}</h1>
   <div class="muted">{{.Restaurant.Description}}</div>
+  {{if gt .Restaurant.ReviewCount 0}}
+  <div class="average-rating" aria-label="平均評価 {{printf "%.1f" .Restaurant.Average}}">
+    <span class="star-bar" aria-hidden="true">
+      <span class="star-bar-bg">★★★★★</span>
+      <span class="star-bar-fill" style="width: {{.Restaurant.AveragePercent}}%;">★★★★★</span>
+    </span>
+    <span class="rating-text">{{printf "%.1f" .Restaurant.Average}}</span>
+    <span class="rating-count">({{.Restaurant.ReviewCount}})</span>
+  </div>
+  {{else}}
+  <div class="average-rating muted">評価はまだありません。</div>
+  {{end}}
   <div class="distance">{{.Restaurant.Distance}}</div>
   {{if .Restaurant.Tags}}
   <div class="tag-list">
@@ -23,7 +35,13 @@
       <li>
         <div class="review-meta">
           <span class="review-user">@{{.Username}}</span>
-          <span class="rating">評価: {{.Rating}}</span>
+          <div class="review-rating" aria-label="評価 {{.Rating}}">
+            <span class="review-stars" aria-hidden="true">
+              <span class="review-stars-bg">★★★★★</span>
+              <span class="review-stars-fill" style="width: {{.RatingPercent}}%;">★★★★★</span>
+            </span>
+            <span class="rating-text">{{.Rating}}</span>
+          </div>
         </div>
         <div>{{.Comment}}</div>
       </li>
@@ -39,15 +57,21 @@
   <h2>口コミ投稿</h2>
   <form class="form" action="/restaurants/{{.Restaurant.ID}}/reviews" method="post">
     <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
-    <label>評価
-      <select name="rating">
-        <option value="5">5</option>
-        <option value="4">4</option>
-        <option value="3">3</option>
-        <option value="2">2</option>
-        <option value="1">1</option>
-      </select>
-    </label>
+    <div class="rating-input">
+      <span class="rating-label">評価</span>
+      <div class="star-rating google-stars" role="radiogroup" aria-label="評価">
+        <input type="radio" id="rating-5" name="rating" value="5" checked>
+        <label for="rating-5" title="5.0">★</label>
+        <input type="radio" id="rating-4" name="rating" value="4">
+        <label for="rating-4" title="4.0">★</label>
+        <input type="radio" id="rating-3" name="rating" value="3">
+        <label for="rating-3" title="3.0">★</label>
+        <input type="radio" id="rating-2" name="rating" value="2">
+        <label for="rating-2" title="2.0">★</label>
+        <input type="radio" id="rating-1" name="rating" value="1">
+        <label for="rating-1" title="1.0">★</label>
+      </div>
+    </div>
     <label>コメント
       <textarea name="comment" required></textarea>
     </label>
