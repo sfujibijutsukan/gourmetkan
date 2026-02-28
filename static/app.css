@@ -1,10 +1,13 @@
 :root {
-  --bg: #f4f0e6;
+  --bg: #f6f1e7;
   --panel: #ffffff;
   --accent: #2f6f5e;
-  --text: #2b2b2b;
-  --muted: #6a6a6a;
-  --border: #ded8cc;
+  --accent-strong: #255a4c;
+  --accent-warm: #7a6c4f;
+  --text: #2a2a2a;
+  --muted: #6b6b6b;
+  --border: #dfd6c6;
+  --shadow: 0 16px 30px rgba(31, 28, 20, 0.08);
 }
 
 * {
@@ -13,9 +16,15 @@
 
 body {
   margin: 0;
-  font-family: "Avenir Next", "Hiragino Kaku Gothic ProN", "Yu Gothic", sans-serif;
+  font-family: "Avenir Next", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Noto Sans JP", sans-serif;
   color: var(--text);
-  background: linear-gradient(120deg, #f3efe3 0%, #f8f5ee 45%, #efe7d7 100%);
+  background: radial-gradient(circle at 12% 10%, rgba(255, 255, 255, 0.9), transparent 42%),
+    radial-gradient(circle at 80% 12%, rgba(238, 230, 210, 0.7), transparent 45%),
+    linear-gradient(140deg, #f7f1e5 0%, #f9f6f0 45%, #efe6d6 100%);
+}
+
+main.container {
+  padding: 28px 20px 48px;
 }
 
 .container {
@@ -25,9 +34,12 @@ body {
 }
 
 .site-header {
-  background: rgba(255, 255, 255, 0.85);
-  border-bottom: 1px solid var(--border);
-  backdrop-filter: blur(6px);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgba(255, 255, 255, 0.88);
+  border-bottom: 1px solid rgba(223, 214, 198, 0.8);
+  backdrop-filter: blur(10px);
 }
 
 .site-header .container {
@@ -38,11 +50,21 @@ body {
 }
 
 .brand {
+  text-decoration: none;
   font-weight: 700;
-  letter-spacing: 1px;
+  letter-spacing: 1.6px;
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  color: var(--accent-strong);
 }
 
 .base-select {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.base-select form {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -54,31 +76,60 @@ body {
 .auth a,
 .btn,
 button {
-  padding: 8px 12px;
-  border-radius: 8px;
+  padding: 9px 14px;
+  border-radius: 999px;
   border: 1px solid var(--border);
   background: var(--panel);
   color: var(--text);
   text-decoration: none;
+  font-weight: 600;
+  transition: transform 0.15s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
 }
 
 .btn {
-  background: var(--accent);
+  background: linear-gradient(120deg, var(--accent) 0%, var(--accent-strong) 100%);
   color: #fff;
   border: none;
+  box-shadow: 0 12px 24px rgba(47, 111, 94, 0.2);
 }
 
 .btn.secondary {
-  background: #7a6c4f;
+  background: linear-gradient(120deg, #8b7a5a 0%, #6f5f44 100%);
+  box-shadow: 0 12px 24px rgba(122, 108, 79, 0.2);
+}
+
+.base-select select:focus,
+.base-select button:focus,
+.auth button:focus,
+.auth a:focus,
+.btn:focus,
+button:focus,
+.form input:focus,
+.form textarea:focus,
+.form select:focus {
+  outline: 2px solid rgba(47, 111, 94, 0.35);
+  outline-offset: 2px;
+  border-color: rgba(47, 111, 94, 0.35);
+}
+
+.base-select select:hover,
+.base-select button:hover,
+.auth button:hover,
+.auth a:hover,
+.btn:hover,
+button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 20px rgba(31, 28, 20, 0.12);
 }
 
 .panel {
   background: var(--panel);
   border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+  border-radius: 20px;
+  padding: 22px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow);
+  animation: panelIn 0.5s ease;
 }
 
 .panel-header {
@@ -86,6 +137,18 @@ button {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
+  flex-wrap: wrap;
+}
+
+.panel-header h1,
+.panel h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  letter-spacing: 0.5px;
+}
+
+.panel h2 {
+  font-size: 1.2rem;
 }
 
 .tag-filter {
@@ -109,20 +172,40 @@ button {
   list-style: none;
   padding: 0;
   margin: 16px 0 0;
+  display: grid;
+  gap: 12px;
 }
 
 .restaurant-list li,
 .review-list li {
-  padding: 12px 0;
-  border-bottom: 1px solid var(--border);
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: linear-gradient(140deg, rgba(255, 255, 255, 0.9) 0%, rgba(248, 244, 237, 0.9) 100%);
+  box-shadow: 0 10px 22px rgba(31, 28, 20, 0.06);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.restaurant-list li:hover,
+.review-list li:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 28px rgba(31, 28, 20, 0.12);
 }
 
 .muted {
   color: var(--muted);
+  line-height: 1.6;
 }
 
 .distance {
   font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(47, 111, 94, 0.08);
+  color: var(--accent-strong);
+  margin-top: 8px;
 }
 
 .form {
@@ -134,10 +217,11 @@ button {
 .form textarea,
 .form select {
   width: 100%;
-  padding: 10px 12px;
-  border-radius: 8px;
+  padding: 12px 14px;
+  border-radius: 12px;
   border: 1px solid var(--border);
   font: inherit;
+  background: rgba(255, 255, 255, 0.9);
 }
 
 .grid {
@@ -172,13 +256,19 @@ button {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 10px;
+  padding: 6px 12px;
   border-radius: 999px;
   background: rgba(47, 111, 94, 0.12);
   color: var(--accent);
   border: 1px solid rgba(47, 111, 94, 0.2);
   text-decoration: none;
   font-size: 0.9rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tag-pill:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(47, 111, 94, 0.16);
 }
 
 .tag-pill.secondary {
@@ -198,9 +288,39 @@ button {
 
 .site-footer {
   border-top: 1px solid var(--border);
-  padding: 20px 0 30px;
+  padding: 28px 0 36px;
   text-align: center;
   color: var(--muted);
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.rating {
+  font-weight: 600;
+  color: var(--accent-strong);
+}
+
+.review-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+
+.review-user {
+  font-weight: 600;
+  color: var(--accent);
+}
+
+@keyframes panelIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (max-width: 720px) {
@@ -214,5 +334,17 @@ button {
   }
   .tag-filter {
     width: 100%;
+  }
+  .base-select {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+  }
+  .base-select form {
+    flex-wrap: wrap;
+  }
+  .restaurant-list,
+  .review-list {
+    grid-template-columns: 1fr;
   }
 }

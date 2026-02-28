@@ -242,6 +242,10 @@ func (h *Handler) RestaurantDetail(w http.ResponseWriter, r *http.Request) {
 
 	session, _ := h.getSession(r)
 	bases, _ := h.baseService.ListBases()
+	var user interface{}
+	if session != nil {
+		user, _ = h.userService.GetUserByID(session.UserID)
+	}
 	detail := RestaurantDetail{
 		ID:          rest.ID,
 		Name:        rest.Name,
@@ -254,6 +258,7 @@ func (h *Handler) RestaurantDetail(w http.ResponseWriter, r *http.Request) {
 	data := TemplateData{
 		Bases:          toBaseOptions(bases),
 		SelectedBaseID: base.ID,
+		User:           user,
 		CSRFToken:      csrfTokenOrEmpty(session),
 		Restaurant:     detail,
 		Reviews:        reviews,

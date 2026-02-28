@@ -9,6 +9,7 @@ type Review struct {
 	ID           int
 	RestaurantID int
 	UserID       int
+	Username     string
 	Rating       int
 	Comment      string
 	CreatedAt    string
@@ -24,10 +25,11 @@ func NewReviewService(db *sql.DB) *ReviewService {
 
 func (s *ReviewService) ListReviews(restaurantID int, limit, offset int) ([]Review, error) {
 	rows, err := s.db.Query(`
-        SELECT id, restaurant_id, user_id, rating, comment, created_at
+        SELECT reviews.id, reviews.restaurant_id, reviews.user_id, users.username, reviews.rating, reviews.comment, reviews.created_at
         FROM reviews
-        WHERE restaurant_id = ?
-        ORDER BY created_at DESC
+        JOIN users ON users.id = reviews.user_id
+        WHERE reviews.restaurant_id = ?
+        ORDER BY reviews.created_at DESC
         LIMIT ? OFFSET ?
     `, restaurantID, limit, offset)
 	if err != nil {
@@ -38,7 +40,7 @@ func (s *ReviewService) ListReviews(restaurantID int, limit, offset int) ([]Revi
 	var reviews []Review
 	for rows.Next() {
 		var review Review
-		if err := rows.Scan(&review.ID, &review.RestaurantID, &review.UserID, &review.Rating, &review.Comment, &review.CreatedAt); err != nil {
+		if err := rows.Scan(&review.ID, &review.RestaurantID, &review.UserID, &review.Username, &review.Rating, &review.Comment, &review.CreatedAt); err != nil {
 			return nil, fmt.Errorf("scan review: %w", err)
 		}
 		reviews = append(reviews, review)

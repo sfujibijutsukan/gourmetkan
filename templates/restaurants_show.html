@@ -21,7 +21,10 @@
   <ul class="review-list">
     {{range .Reviews}}
       <li>
-        <div class="rating">評価: {{.Rating}}</div>
+        <div class="review-meta">
+          <span class="review-user">@{{.Username}}</span>
+          <span class="rating">評価: {{.Rating}}</span>
+        </div>
         <div>{{.Comment}}</div>
       </li>
     {{end}}
@@ -31,7 +34,7 @@
   {{end}}
 </section>
 
-{{if .CSRFToken}}
+{{if .User}}
 <section class="panel">
   <h2>口コミ投稿</h2>
   <form class="form" action="/restaurants/{{.Restaurant.ID}}/reviews" method="post">
@@ -50,6 +53,12 @@
     </label>
     <button type="submit">投稿する</button>
   </form>
+</section>
+{{else}}
+<section class="panel">
+  <h2>口コミ投稿</h2>
+  <p class="muted">口コミを書くにはログインが必要です。</p>
+  <a class="btn" href="/auth/github/login">GitHubでログイン</a>
 </section>
 {{end}}
 {{end}}

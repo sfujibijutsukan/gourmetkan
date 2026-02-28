@@ -8,7 +8,7 @@
       <input type="text" name="name" required>
       {{with index .Errors "name"}}<div class="error">{{.}}</div>{{end}}
     </label>
-    <label>Google Maps URL
+    <label>Google Maps URL (URLから位置情報を抽出/緯度・経度の直接入力も可能)
       <input type="url" name="maps_url" placeholder="https://maps.app.goo.gl/...">
     </label>
     <div class="grid">
