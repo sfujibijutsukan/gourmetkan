@@ -1,0 +1,35 @@
+{{define "title"}}店舗登録{{end}}
+{{define "content"}}
+<section class="panel">
+  <h1>店舗登録</h1>
+  <form class="form" action="/restaurants" method="post">
+    <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+    <label>店名
+      <input type="text" name="name" required>
+      {{with index .Errors "name"}}<div class="error">{{.}}</div>{{end}}
+    </label>
+    <label>説明
+      <textarea name="description"></textarea>
+      {{with index .Errors "description"}}<div class="error">{{.}}</div>{{end}}
+    </label>
+    <label>住所
+      <input type="text" name="address">
+      {{with index .Errors "address"}}<div class="error">{{.}}</div>{{end}}
+    </label>
+    <label>Google Maps URL
+      <input type="url" name="maps_url">
+    </label>
+    <div class="grid">
+      <label>緯度
+        <input type="text" name="latitude" placeholder="34.810888">
+      </label>
+      <label>経度
+        <input type="text" name="longitude" placeholder="135.561172">
+      </label>
+    </div>
+    {{with index .Errors "latitude"}}<div class="error">{{.}}</div>{{end}}
+    <button type="submit">登録する</button>
+  </form>
+</section>
+{{end}}
+{{template "layout" .}}

@@ -1,0 +1,11 @@
+/data/
+/backup/
+/bin/
+/tmp/
+*.db
+*.db-journal
+*.log
+.DS_Store
+.env
+*.sqlite
+*.sqlite3

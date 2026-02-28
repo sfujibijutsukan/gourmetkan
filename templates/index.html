@@ -1,0 +1,24 @@
+{{define "title"}}店舗一覧{{end}}
+{{define "content"}}
+<section class="panel">
+  <div class="panel-header">
+    <h1>店舗一覧</h1>
+    <a class="btn" href="/restaurants/new">店舗登録</a>
+    <a class="btn secondary" href="/random">ランダム提案</a>
+  </div>
+  {{if .Restaurants}}
+    <ul class="restaurant-list">
+      {{range .Restaurants}}
+        <li>
+          <a href="/restaurants/{{.ID}}">{{.Name}}</a>
+          <div class="muted">{{.Description}}</div>
+          <div class="distance">{{.Distance}}</div>
+        </li>
+      {{end}}
+    </ul>
+  {{else}}
+    <p>店舗がまだ登録されていません。</p>
+  {{end}}
+</section>
+{{end}}
+{{template "layout" .}}

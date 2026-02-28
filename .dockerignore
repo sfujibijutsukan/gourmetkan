@@ -1,0 +1,7 @@
+data/
+backup/
+bin/
+.git/
+.DS_Store
+*.db
+*.log
