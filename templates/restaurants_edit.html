@@ -1,0 +1,88 @@
+{{define "title"}}店舗編集{{end}}
+{{define "content"}}
+<section class="panel">
+    <h1>店舗編集</h1>
+    <form class="form" action="/restaurants/{{.Restaurant.ID}}/update" method="post" enctype="multipart/form-data">
+        <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+        <label>店名
+            <input type="text" name="name" value="{{.Restaurant.Name}}" required>
+            {{with index .Errors "name"}}<div class="error">{{.}}</div>{{end}}
+        </label>
+        <label>説明
+            <textarea name="description">{{.Restaurant.Description}}</textarea>
+            {{with index .Errors "description"}}<div class="error">{{.}}</div>{{end}}
+        </label>
+        <label>住所
+            <input type="text" name="address" value="{{.Restaurant.Address}}">
+            {{with index .Errors "address"}}<div class="error">{{.}}</div>{{end}}
+        </label>
+        <label>Google Maps URL
+            <input type="url" name="maps_url" value="{{.Restaurant.MapsURL}}">
+        </label>
+        <label>店舗写真（あれば載せて！複数可）</label>
+        <div class="dropzone js-dropzone">
+            <input type="file" name="photos" accept="image/png,image/jpeg,image/gif,image/webp" multiple>
+            <p class="dropzone-hint">ここに画像をドラッグ&ドロップ、またはボタンから選択</p>
+        </div>
+        {{with index .Errors "photo"}}<div class="error">{{.}}</div>{{end}}
+        {{if .Restaurant.PhotoPaths}}
+        <div class="photo-gallery edit-gallery">
+            {{range .Restaurant.PhotoPaths}}
+            <div class="edit-photo-item">
+                <button class="remove-photo-btn js-remove-photo-btn" type="button" aria-label="この画像を削除" aria-pressed="false">×</button>
+                <img class="photo-preview" src="{{.}}" alt="現在の店舗写真">
+                <input type="checkbox" class="remove-photo-input" name="remove_photos" value="{{.}}" hidden>
+            </div>
+            {{end}}
+        </div>
+        {{end}}
+        <div class="grid">
+            <label>緯度
+                <input type="text" name="latitude" value="{{printf " %.6f" .Restaurant.Latitude}}"
+                    placeholder="34.810888">
+            </label>
+            <label>経度
+                <input type="text" name="longitude" value="{{printf " %.6f" .Restaurant.Longitude}}"
+                    placeholder="135.561172">
+            </label>
+        </div>
+        {{with index .Errors "latitude"}}<div class="error">{{.}}</div>{{end}}
+        <div class="tags">
+            <div class="tags-label">タグ（複数可）</div>
+            <div class="tag-options">
+                {{range .PresetTags}}
+                <label class="tag-pill">
+                    <input type="checkbox" name="tags" value="{{.}}" {{if index $.SelectedTagSet .}}checked{{end}}>
+                    <span>{{.}}</span>
+                </label>
+                {{end}}
+            </div>
+            {{if .AvailableTags}}
+            <div class="tag-options">
+                {{range .AvailableTags}}
+                <label class="tag-pill secondary">
+                    <input type="checkbox" name="tags" value="{{.Name}}" {{if index $.SelectedTagSet
+                        .Name}}checked{{end}}>
+                    <span>{{.Name}}</span>
+                </label>
+                {{end}}
+            </div>
+            {{end}}
+            <label>任意タグ（カンマ区切り）
+                <input type="text" name="tag_input" value="{{.TagInput}}" placeholder="例: 昼飲み, こってり">
+            </label>
+            {{with index .Errors "tags"}}<div class="error">{{.}}</div>{{end}}
+        </div>
+        <div class="review-actions">
+            <button type="submit">更新</button>
+            <a class="btn secondary" href="/restaurants/{{.Restaurant.ID}}">戻る</a>
+            <form action="/restaurants/{{.Restaurant.ID}}/delete" method="post" class="delete-form"
+                onsubmit="return confirm('この店舗を削除します。口コミも含めて元に戻せません。よろしいですか？');">
+                <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+                <button class="btn danger" type="submit">この店舗を削除</button>
+            </form>
+        </div>
+    </form>
+</section>
+{{end}}
+{{template "layout" .}}

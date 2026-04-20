@@ -1,0 +1,49 @@
+{{define "title"}}口コミ編集{{end}}
+{{define "content"}}
+<section class="panel">
+  <h1>口コミ編集</h1>
+  <p class="muted">対象店舗: <a href="/restaurants/{{.Restaurant.ID}}">{{.Restaurant.Name}}</a></p>
+  <form class="form" action="/reviews/{{.Review.ID}}/update" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+    <label>評価
+      <select name="rating" required>
+        <option value="1" {{if eq .Review.Rating 1}}selected{{end}}>1</option>
+        <option value="2" {{if eq .Review.Rating 2}}selected{{end}}>2</option>
+        <option value="3" {{if eq .Review.Rating 3}}selected{{end}}>3</option>
+        <option value="4" {{if eq .Review.Rating 4}}selected{{end}}>4</option>
+        <option value="5" {{if eq .Review.Rating 5}}selected{{end}}>5</option>
+      </select>
+    </label>
+    <label>コメント
+      <textarea name="comment" required>{{.Review.Comment}}</textarea>
+      {{with index .Errors "comment"}}<div class="error">{{.}}</div>{{end}}
+    </label>
+    <label>写真（あれば載せて！複数可）</label>
+    <div class="dropzone js-dropzone">
+      <input type="file" name="photos" accept="image/png,image/jpeg,image/gif,image/webp" multiple>
+      <p class="dropzone-hint">ここに画像をドラッグ&ドロップ、またはボタンから選択</p>
+    </div>
+    {{with index .Errors "photo"}}<div class="error">{{.}}</div>{{end}}
+    {{if .Review.PhotoPaths}}
+    <div class="photo-gallery edit-gallery">
+      {{range .Review.PhotoPaths}}
+      <div class="edit-photo-item">
+        <button class="remove-photo-btn js-remove-photo-btn" type="button" aria-label="この画像を削除" aria-pressed="false">×</button>
+        <img class="photo-preview" src="{{.}}" alt="現在の口コミ写真">
+        <input type="checkbox" class="remove-photo-input" name="remove_photos" value="{{.}}" hidden>
+      </div>
+      {{end}}
+    </div>
+    {{end}}
+    <div class="review-actions">
+      <button type="submit">更新</button>
+      <a class="btn secondary" href="/restaurants/{{.Restaurant.ID}}">戻る</a>
+        <form class="delete-form" action="/reviews/{{.Review.ID}}/delete" method="post">
+            <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+            <button type="submit" class="btn danger">この口コミを削除</button>
+        </form>
+    </div>
+  </form>
+</section>
+{{end}}
+{{template "layout" .}}

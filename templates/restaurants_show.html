@@ -1,0 +1,118 @@
+{{define "title"}}店舗詳細{{end}}
+{{define "content"}}
+<section class="panel">
+  <div class="panel-header">
+    <h1>{{.Restaurant.Name}}</h1>
+    {{if .Restaurant.CanEdit}}
+      <a class="btn secondary" href="/restaurants/{{.Restaurant.ID}}/edit">編集</a>
+    {{end}}
+  </div>
+  {{if .Restaurant.PhotoPaths}}
+  <div class="photo-gallery">
+    {{range .Restaurant.PhotoPaths}}
+    <img class="restaurant-photo" src="{{.}}" alt="{{$.Restaurant.Name}}の写真">
+    {{end}}
+  </div>
+  {{end}}
+  <div class="muted">{{.Restaurant.Description}}</div>
+  {{if gt .Restaurant.ReviewCount 0}}
+  <div class="average-rating" aria-label="平均評価 {{printf "%.1f" .Restaurant.Average}}">
+    <span class="star-bar" aria-hidden="true">
+      <span class="star-bar-bg">★★★★★</span>
+      <span class="star-bar-fill" style="width: {{.Restaurant.AveragePercent}}%;">★★★★★</span>
+    </span>
+    <span class="rating-text">{{printf "%.1f" .Restaurant.Average}}</span>
+    <span class="rating-count">({{.Restaurant.ReviewCount}})</span>
+  </div>
+  {{else}}
+  <div class="average-rating muted">評価はまだありません。</div>
+  {{end}}
+  <div class="distance">{{.Restaurant.Distance}}</div>
+  {{if .Restaurant.Tags}}
+  <div class="tag-list catalog-tags">
+    {{range .Restaurant.Tags}}
+      <a class="tag-chip" href="/?tag={{.}}"># {{.}}</a>
+    {{end}}
+  </div>
+  {{end}}
+  {{if .Restaurant.Address}}<div>住所: {{.Restaurant.Address}}</div>{{end}}
+  {{if .Restaurant.MapsURL}}<div><a href="{{.Restaurant.MapsURL}}" target="_blank" rel="noreferrer">Google Maps を開く</a></div>{{end}}
+</section>
+
+<section class="panel">
+  <h2>口コミ</h2>
+  {{if .Reviews}}
+  <ul class="review-list">
+    {{range .Reviews}}
+      <li>
+        <div class="review-meta">
+          <span class="review-user">@{{.Username}}</span>
+          <div class="review-rating" aria-label="評価 {{.Rating}}">
+            <span class="review-stars" aria-hidden="true">
+              <span class="review-stars-bg">★★★★★</span>
+              <span class="review-stars-fill" style="width: {{.RatingPercent}}%;">★★★★★</span>
+            </span>
+            <span class="rating-text">{{.Rating}}</span>
+          </div>
+        </div>
+        {{if .PhotoPaths}}
+        <div class="photo-gallery">
+          {{range .PhotoPaths}}
+          <img class="review-photo" src="{{.}}" alt="口コミ写真">
+          {{end}}
+        </div>
+        {{end}}
+        <div>{{.Comment}}</div>
+        {{if .CanManage}}
+        <div class="review-actions">
+          <a class="btn secondary" href="/reviews/{{.ID}}/edit">編集</a>
+        </div>
+        {{end}}
+      </li>
+    {{end}}
+  </ul>
+  {{else}}
+  <p>口コミはまだありません。</p>
+  {{end}}
+</section>
+
+{{if .User}}
+<section class="panel">
+  <h2>口コミ投稿</h2>
+  <form class="form" action="/restaurants/{{.Restaurant.ID}}/reviews" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+    <div class="rating-input">
+      <span class="rating-label">評価</span>
+      <div class="star-rating google-stars" role="radiogroup" aria-label="評価">
+        <input type="radio" id="rating-5" name="rating" value="5" checked>
+        <label for="rating-5" title="5.0">★</label>
+        <input type="radio" id="rating-4" name="rating" value="4">
+        <label for="rating-4" title="4.0">★</label>
+        <input type="radio" id="rating-3" name="rating" value="3">
+        <label for="rating-3" title="3.0">★</label>
+        <input type="radio" id="rating-2" name="rating" value="2">
+        <label for="rating-2" title="2.0">★</label>
+        <input type="radio" id="rating-1" name="rating" value="1">
+        <label for="rating-1" title="1.0">★</label>
+      </div>
+    </div>
+    <label>コメント
+      <textarea name="comment" required></textarea>
+    </label>
+    <label>写真（あれば載せて！複数可）</label>
+    <div class="dropzone js-dropzone">
+      <input type="file" name="photos" accept="image/png,image/jpeg,image/gif,image/webp" multiple>
+      <p class="dropzone-hint">ここに画像をドラッグ&ドロップ、またはボタンから選択</p>
+    </div>
+    <button type="submit">投稿する</button>
+  </form>
+</section>
+{{else}}
+<section class="panel">
+  <h2>口コミ投稿</h2>
+  <p class="muted">口コミを書くにはログインが必要です。</p>
+  <a class="btn" href="/auth/github/login">GitHubでログイン</a>
+</section>
+{{end}}
+{{end}}
+{{template "layout" .}}

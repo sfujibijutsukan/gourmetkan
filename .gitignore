@@ -1,0 +1,17 @@
+/data/
+/backup/
+/bin/
+/tmp/
+*.db
+*.db-journal
+*.log
+.DS_Store
+.env
+*.sqlite
+*.sqlite3
+
+static/uploads/*png
+static/uploads/*jpg
+static/uploads/*jpeg
+static/uploads/*gif
+static/uploads/*webp
