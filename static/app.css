@@ -339,6 +339,7 @@ button:hover {
   background: rgba(47, 111, 94, 0.08);
   color: var(--accent-strong);
   margin-top: 8px;
+  align-self: flex-start;
 }
 
 .form {
@@ -714,28 +715,139 @@ button:hover {
   }
 }
 
+/* ── Restaurant list item text wrapper ─────────────────────────────── */
+.restaurant-list-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* ── Responsive: tablets and large phones (≤ 720 px) ─────────────── */
 @media (max-width: 720px) {
+  /* Header: brand + auth on one row, base-select full-width below */
   .site-header .container {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 8px 12px;
   }
+
+  .brand {
+    flex: 1;
+  }
+
+  .base-select {
+    order: 3;
+    width: 100%;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .base-select form {
+    flex: 1;
+    min-width: 0;
+    flex-wrap: nowrap;
+  }
+
+  .base-select select {
+    flex: 1;
+    min-width: 60px;
+  }
+
   .panel-header {
     flex-direction: column;
     align-items: flex-start;
   }
+
   .tag-filter {
     width: 100%;
   }
-  .base-select {
-    flex-direction: column;
-    align-items: flex-start;
-    width: 100%;
-  }
-  .base-select form {
-    flex-wrap: wrap;
-  }
+
   .restaurant-list,
   .review-list {
     grid-template-columns: 1fr;
+  }
+
+  /* Horizontal card layout: thumbnail left, text right */
+  .restaurant-list li {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .restaurant-list li .restaurant-thumb {
+    flex: 0 0 80px;
+    width: 80px;
+    height: 80px;
+    max-width: 80px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 0;
+    align-self: flex-start;
+  }
+
+  /* Smaller columns for photo gallery */
+  .photo-gallery {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  }
+}
+
+/* ── Responsive: narrow phones (≤ 480 px) ────────────────────────── */
+@media (max-width: 480px) {
+  .site-header .container {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+
+  .panel {
+    padding: 14px;
+    border-radius: 14px;
+    margin-bottom: 14px;
+  }
+
+  main.container {
+    padding: 14px 10px 28px;
+  }
+
+  .container {
+    padding: 8px 10px;
+  }
+
+  .panel-header h1,
+  .panel h1 {
+    font-size: 1.3rem;
+  }
+
+  .panel h2 {
+    font-size: 1.1rem;
+  }
+
+  .restaurant-list li {
+    padding: 10px;
+    gap: 10px;
+  }
+
+  .restaurant-list li .restaurant-thumb {
+    flex: 0 0 68px;
+    width: 68px;
+    height: 68px;
+    max-width: 68px;
+  }
+
+  .photo-gallery {
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  }
+
+  /* Stack tag filter items vertically on very narrow screens */
+  .tag-filter {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .tag-filter select {
+    width: 100%;
   }
 }

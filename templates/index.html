@@ -24,16 +24,18 @@
           {{if .PhotoPath}}
           <img class="restaurant-thumb" src="{{.PhotoPath}}" alt="{{.Name}}の写真">
           {{end}}
-          <a href="/restaurants/{{.ID}}">{{.Name}}</a>
-          <div class="muted">{{.Description}}</div>
-          {{if .Tags}}
-          <div class="tag-list catalog-tags">
-            {{range .Tags}}
-              <a class="tag-chip" href="/?tag={{.}}"># {{.}}</a>
+          <div class="restaurant-list-text">
+            <a href="/restaurants/{{.ID}}">{{.Name}}</a>
+            <div class="muted">{{.Description}}</div>
+            {{if .Tags}}
+            <div class="tag-list catalog-tags">
+              {{range .Tags}}
+                <a class="tag-chip" href="/?tag={{.}}"># {{.}}</a>
+              {{end}}
+            </div>
             {{end}}
+            <div class="distance">{{.Distance}}</div>
           </div>
-          {{end}}
-          <div class="distance">{{.Distance}}</div>
         </li>
       {{end}}
     </ul>
