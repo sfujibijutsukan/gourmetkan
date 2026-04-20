@@ -38,11 +38,11 @@
     <div class="review-actions">
       <button type="submit">更新</button>
       <a class="btn secondary" href="/restaurants/{{.Restaurant.ID}}">戻る</a>
-        <form class="delete-form" action="/reviews/{{.Review.ID}}/delete" method="post">
-            <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
-            <button type="submit" class="btn danger">この口コミを削除</button>
-        </form>
     </div>
+  </form>
+  <form class="delete-form" action="/reviews/{{.Review.ID}}/delete" method="post">
+    <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+    <button type="submit" class="btn danger">この口コミを削除</button>
   </form>
 </section>
 {{end}}
