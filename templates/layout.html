@@ -15,7 +15,7 @@
         <form action="/bases/select" method="post">
           {{if .CSRFToken}}<input type="hidden" name="csrf_token" value="{{.CSRFToken}}">{{end}}
           <label for="base_id">拠点</label>
-          <select id="base_id" name="base_id" onchange="this.form.submit()">
+          <select id="base_id" name="base_id">
             {{range .Bases}}
             <option value="{{.ID}}" {{if eq $.SelectedBaseID .ID}}selected{{end}}>{{.Name}}</option>
             {{end}}

@@ -77,7 +77,17 @@
     });
   }
 
+  function bindBaseSelect() {
+    const select = document.getElementById('base_id');
+    if (select) {
+      select.addEventListener('change', () => {
+        select.form.submit();
+      });
+    }
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
+    bindBaseSelect();
     bindDropzones();
     bindPhotoRemoveButtons();
   });
