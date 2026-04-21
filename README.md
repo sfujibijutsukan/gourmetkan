@@ -12,7 +12,7 @@ export BASE_URL=http://localhost:8080
 docker compose up --build
 ```
 
-Uploaded images are persisted in a named volume (`app-uploads`) mounted at `/app/static/uploads`.
+Uploaded images are persisted in a volume mounted at `./static/uploads`.
 To keep images across redeploys, avoid removing volumes.
 
 Stop with:
@@ -23,6 +23,9 @@ docker compose down
 
 If you run `docker compose down -v`, uploaded images will also be deleted.
 
-## Notes
+## Migration
+1. Copy the following data from the old PC to the new PC
+- SQLite DB(Restaurant name, other information...): `./data/app.db`
+- Uploaded images: `./static/uploads`
 
-- SQLite DB: `./data/app.db`
+2. Docker compose
