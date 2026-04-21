@@ -79,11 +79,18 @@
 
   function bindBaseSelect() {
     const select = document.getElementById('base_id');
-    if (select) {
-      select.addEventListener('change', () => {
-        select.form.submit();
-      });
+    if (!select || !select.form) {
+      return;
     }
+    const submitBaseSelect = () => {
+      if (typeof select.form.requestSubmit === 'function') {
+        select.form.requestSubmit();
+        return;
+      }
+      select.form.submit();
+    };
+    select.addEventListener('change', submitBaseSelect);
+    select.addEventListener('input', submitBaseSelect);
   }
 
   document.addEventListener('DOMContentLoaded', () => {
