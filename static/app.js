@@ -90,7 +90,6 @@
       select.form.submit();
     };
     select.addEventListener('change', submitBaseSelect);
-    select.addEventListener('input', submitBaseSelect);
   }
 
   document.addEventListener('DOMContentLoaded', () => {
